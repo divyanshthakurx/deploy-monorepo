@@ -12,3 +12,10 @@ export default async function Home() {
     </div>
   );
 }
+
+
+export const dynamic = 'force-dynamic';
+
+// OR 
+
+// export const revalidate =  60;   // revalidate page every 60 seconds

@@ -1,1 +1,20 @@
-FROM baseImage
+FROM oven/bun:1
+
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
+ENV PORT=8080
+
+WORKDIR /apps/backend
+
+COPY package*.json ./
+COPY bun.lock ./
+COPY turbo.json ./
+
+RUN bun ci
+RUN cd apps/backend
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["bun", "run", "index.ts"]

@@ -1,1 +1,24 @@
-FROM baseImage
+FROM oven/bun:1
+
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
+ENV PORT=8080
+
+WORKDIR /apps/web
+ 
+COPY package*.json ./
+COPY bun.lock ./
+COPY turbo.json ./
+
+RUN bun ci
+
+RUN bunx prisma generate
+RUN cd packages/db && bunx prisma generate && cd ../..
+RUN cd apps/web && bun run build
+
+COPY . .
+
+EXPOSE 8080
+
+CMD [ "bun", "run", "start" ]
+
