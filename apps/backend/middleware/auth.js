@@ -3,14 +3,13 @@ import "dotenv/config";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const authUser = (req, res, next) => {
+export const authUser = (req, res, next) => {
     const token = req.cookies.token;
 
     if(!token) {
-        res.json({
+        return res.status(401).json({
             message: "Jwt token missing"
         });
-        return;
     };
 
     try {
@@ -21,7 +20,7 @@ const authUser = (req, res, next) => {
             });
         };
         const payload = decoded;
-        req.userId = payload.userId,  
+        req.userId = payload.userId;
         next();
     } catch (error) {
         console.error("error is", error);
