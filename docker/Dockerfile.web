@@ -2,11 +2,11 @@ FROM oven/bun:1
 
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
-ENV PORT=8080
+ENV PORT=3000
 
-WORKDIR /apps/web
+WORKDIR /apps
  
-COPY package*.json ./
+COPY package.json ./
 COPY bun.lock ./
 COPY turbo.json ./
 
@@ -18,7 +18,7 @@ RUN cd apps/web && bun run build
 
 COPY . .
 
-EXPOSE 8080
+EXPOSE 3000
 
 CMD [ "bun", "run", "start" ]
 
