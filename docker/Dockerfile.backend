@@ -4,17 +4,20 @@ ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 ENV PORT=8080
 
-WORKDIR /apps/backend
+WORKDIR /apps
 
-COPY package*.json ./
+COPY package.json ./
 COPY bun.lock ./
 COPY turbo.json ./
+COPY apps/backend/package.json apps/backend/package.json
+COPY packages/db/package.json packages/db/package.json
 
 RUN bun ci
-RUN cd apps/backend
 
 COPY . .
 
-EXPOSE 3000
+WORKDIR /apps/apps/backend
+
+EXPOSE 8080
 
 CMD ["bun", "run", "index.ts"]
