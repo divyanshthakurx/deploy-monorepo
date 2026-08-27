@@ -35,7 +35,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@3.7.66.165 "docker pull divyanshthakurx/deploy-monorepo-backend:${{ github.sha }} && docker stop backend || true && docker rm backend || true && docker run --name backend --restart always -d -p 8080:8080 divyanshthakurx/deploy-monorepo-backend:${{ github.sha }} && docker image prune -af"
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@3.7.66.165 "docker pull divyanshthakurx/deploy-monorepo-backend:${{ github.sha }} && docker stop backend || true && docker rm backend || true && docker run --name backend -d -p 8080:8080 divyanshthakurx/deploy-monorepo-backend:${{ github.sha }} && docker image prune -af"
 
 #       - name: SSH and deploy to VM
 #         uses: appleboy/ssh-action@v1.0.3
