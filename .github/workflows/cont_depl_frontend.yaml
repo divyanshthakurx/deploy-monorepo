@@ -31,6 +31,10 @@ jobs:
           file: ./docker/Dockerfile.web
           build-args: DATABASE_URL=${{ secrets.DATABASE_URL }}
           push: true
-          tags: divyanshthakurx/deploy-monorepo-ci-cd:${{ github.sha }}
+          tags: divyanshthakurx/deploy-monorepo-frontend:${{ github.sha }}
+    
+
+
+    
 
     

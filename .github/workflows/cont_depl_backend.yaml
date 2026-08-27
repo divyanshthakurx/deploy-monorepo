@@ -30,6 +30,23 @@ jobs:
           context: .
           file: ./docker/Dockerfile.backend
           push: true
-          tags: divyanshthakurx/deploy-monorepo-ci-cd:${{ github.sha }}
+          tags: divyanshthakurx/deploy-monorepo-backend:${{ github.sha }}
 
-    
+      - name: SSH and deploy to VM
+          uses: appleboy/ssh-action@v1.0.3
+          with:
+            host: ${{ secrets.VM_HOST }}
+            username: ${{ secrets.VM_USERNAME }}
+            key: ${{ secrets.VM_SSH_KEY }}
+            script: |
+              sudo docker pull divyanshthakurx/deploy-monorepo-backend:${{ github.sha }}
+              sudo docker stop backend || true
+              sudo docker rm backend || true
+              sudo docker run -d \
+                --name backend \
+                --restart always \
+                -p 3000:3000 \
+                divyanshthakurx/deploy-monorepo-frontend:${{ github.sha }}
+              sudo docker image prune -af
+
+        
