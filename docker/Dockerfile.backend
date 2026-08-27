@@ -16,6 +16,7 @@ RUN bun ci
 
 COPY . .
 
+RUN cd packages/db && bunx prisma generate
 WORKDIR /apps/apps/backend
 
 EXPOSE 8080
