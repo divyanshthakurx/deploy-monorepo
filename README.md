@@ -1,7 +1,5 @@
 # Deploy Monorepo with CI/CD pipelines using GitHub Actions.
 
-# Deploy Mono
-
 A barebones monorepo built to test and demonstrate end-to-end CI/CD deployment pipelines using GitHub Actions.
 
 ## What's inside?
