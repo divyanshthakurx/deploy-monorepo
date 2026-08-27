@@ -1,59 +1,3 @@
-## build the docker code
-## push the docker image to docker hub
-## SSH into our VM and start the new image
-
-# name: Deploy the backend
-
-# on:
-#   push:
-#     branches: [ main ]
-#     paths:
-#       - 'apps/backend/**'
-#       - 'packages/**'
-#       - 'docker/Dockerfile.backend'
-#       - '.github/workflows/deploy-backend.yml'
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout the code
-#         uses: actions/checkout@v4
-
-#       - name: Set up Docker Buildx
-#         uses: docker/setup-buildx-action@v3
-
-#       - name: Docker login
-#         uses: docker/login-action@v3
-#         with:
-#           username: ${{ secrets.DOCKERHUB_USERNAME }}
-#           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-#       - name: Build and push
-#         uses: docker/build-push-action@v6
-#         with:
-#           context: .
-#           file: ./docker/Dockerfile.backend
-#           push: true
-#           tags: divyanshthakurx/deploy-monorepo-backend:${{ github.sha }}
-
-#       - name: SSH and deploy to VM
-#         uses: appleboy/ssh-action@v1.0.3
-#         with:
-#           host: ${{ secrets.VM_HOST }}
-#           username: ${{ secrets.VM_USERNAME }}
-#           key: ${{ secrets.VM_SSH_KEY }}
-#           script: |
-#             sudo docker pull divyanshthakurx/deploy-monorepo-backend:${{ github.sha }}
-#             sudo docker stop backend || true
-#             sudo docker rm backend || true
-#             sudo docker run -d \
-#               --name backend \
-#               --restart always \
-#               -p 8080:8080 \
-#               divyanshthakurx/deploy-monorepo-backend:${{ github.sha }}
-#             sudo docker image prune -af
-
 name: Deploy the backend
 
 on:
@@ -83,3 +27,29 @@ jobs:
           file: ./docker/Dockerfile.backend
           push: true
           tags: divyanshthakurx/deploy-monorepo-backend:${{ github.sha }}
+
+      - name: Deploy Docker container via SSH
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@3.7.66.165 "docker pull divyanshthakurx/deploy-monorepo-backend:${{ github.sha }} && docker stop backend || true && docker rm backend || true && docker run --name backend --restart always -d -p 8080:8080 divyanshthakurx/deploy-monorepo-backend:${{ github.sha }} && docker image prune -af"
+
+#       - name: SSH and deploy to VM
+#         uses: appleboy/ssh-action@v1.0.3
+#         with:
+#           host: ${{ secrets.VM_HOST }}
+#           username: ${{ secrets.VM_USERNAME }}
+#           key: ${{ secrets.VM_SSH_KEY }}
+#           script: |
+#             sudo docker pull divyanshthakurx/deploy-monorepo-backend:${{ github.sha }}
+#             sudo docker stop backend || true
+#             sudo docker rm backend || true
+#             sudo docker run -d \
+#               --name backend \
+#               --restart always \
+#               -p 8080:8080 \
+#               divyanshthakurx/deploy-monorepo-backend:${{ github.sha }}
+#             sudo docker image prune -af

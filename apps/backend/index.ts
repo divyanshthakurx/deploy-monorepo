@@ -1,6 +1,5 @@
 import express from "express";
 import { prisma } from "db/client";
-import "dotenv/config";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken";
 import cors from "cors";
