@@ -7,6 +7,11 @@ name: Deploy the backend
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'apps/backend/**'
+      - 'packages/**'
+      - 'docker/Dockerfile.backend'
+      - '.github/workflows/deploy-backend.yml'
 
 jobs:
   build:
@@ -26,7 +31,7 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v6
-        with: 
+        with:
           context: .
           file: ./docker/Dockerfile.backend
           push: true
@@ -35,18 +40,16 @@ jobs:
       - name: SSH and deploy to VM
         uses: appleboy/ssh-action@v1.0.3
         with:
-            host: ${{ secrets.VM_HOST }}
-            username: ${{ secrets.VM_USERNAME }}
-            key: ${{ secrets.VM_SSH_KEY }}
-            script: |
-              sudo docker pull divyanshthakurx/deploy-monorepo-backend:${{ github.sha }}
-              sudo docker stop backend || true
-              sudo docker rm backend || true
-              sudo docker run -d \
-                --name backend \
-                --restart always \
-                -p 8080:8080 \
-                divyanshthakurx/deploy-monorepo-backend:${{ github.sha }}
-              sudo docker image prune -af
-
-        
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            sudo docker pull divyanshthakurx/deploy-monorepo-backend:${{ github.sha }}
+            sudo docker stop backend || true
+            sudo docker rm backend || true
+            sudo docker run -d \
+              --name backend \
+              --restart always \
+              -p 8080:8080 \
+              divyanshthakurx/deploy-monorepo-backend:${{ github.sha }}
+            sudo docker image prune -af
