@@ -46,7 +46,7 @@ jobs:
                 --name backend \
                 --restart always \
                 -p 8080:8080 \
-                divyanshthakurx/deploy-monorepo-frontend:${{ github.sha }}
+                divyanshthakurx/deploy-monorepo-backend:${{ github.sha }}
               sudo docker image prune -af
 
         
